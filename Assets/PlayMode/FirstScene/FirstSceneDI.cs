@@ -10,20 +10,6 @@ public sealed class FirstSceneDI : MonoBehaviour
     private void Start()
     {
         var containerBuilder = new ContainerBuilder();
-        
-        containerBuilder.Register<Logger>(Lifetime.Singleton);
-        containerBuilder.Register<Calculator>(Lifetime.Singleton);
-        containerBuilder.Register<HogeClass>(Lifetime.Singleton);
-
-        IObjectResolver objectResolver = containerBuilder.Build();
-        {
-            var hoge = objectResolver.Resolve<HogeClass>();
-
-            hoge.LoggerTest();
-            var result = hoge.CalculatorTest(3, 5); // [Logger] 3 + 5 = 8 と出力される
-            DisplayArea.text = "CalcValue:" + result.ToString();
-        }
-        
         containerBuilder.Register<IGacha, Gacha>(Lifetime.Singleton);
         IObjectResolver objectResolverGacha = containerBuilder.Build();
         _gacha = objectResolverGacha.Resolve<IGacha>();
