@@ -84,7 +84,7 @@ DIをするとこんな感じです。
 
 ContainerBuilderという構築する入れ物を作り、Registerにより何をどう作るか登録します。
 
-こちらが登録作業、作るbuilderに登録Registerしています。<IGacha, Gacha>でインタフェースと実態を教えてあげます。
+作るbuilderに登録Registerしています。<IGacha, Gacha>でインタフェースと実態を教えてあげます。
 
 builder.Register<IGacha, Gacha>(Lifetime.Singleton);
 
@@ -220,10 +220,6 @@ public class SecondSceneDI : MonoBehaviour
 
 テストを実装する時、同じやり方でインタフェースからインスタンスを取得し、また容易に実装を切り替えてテストを行うことができます。
 
-この
-- テストを容易にできる
-- 簡単実装を切り替えられる
-  
 
 ```
 [Test]
@@ -240,9 +236,19 @@ public void DamageTest()
     Assert.That(_enemy.Hp, Is.EqualTo(90));
 }
 ```
+この
+- テストを容易にできる
+- 簡単実装を切り替えられる
+  
 という点がDIコンテナを使う大きなメリットです。
+今回のサンプルは
+FirstSceneと、SecondSceneという２つのシーンを作りました。
+２つのシーンに各々、FirstSceneDI、SecondSceneDIというスクリプトを作り、こちらでDIを実施しています。
+
+自分も最初にvContainerを学ぶときは、すべて最初に解決するかと思いましたが、画面ごとなど単位に分けてDIを実施し、また画面が破棄されるタイミングで
+DIしたものをまとめて破棄できたりするもので、このように生存期間(スコープ）の管理を一元化できるのも、DIのポイントのようです。
 
 
-
+# 参考資料
 
 https://qiita.com/sakano/items/b91e01f7fc0a946090ac
