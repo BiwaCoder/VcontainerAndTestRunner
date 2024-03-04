@@ -1,6 +1,6 @@
 # VcontainerとTestRunnerの簡単なサンプル
 
-このプロジェクトはvContainerとTestRunnerを学ぶための簡単なサンプルです
+このプロジェクトはVContainerとTestRunnerを学ぶための簡単なサンプルです
 
 https://github.com/hadashiA/VContainer
 
@@ -8,13 +8,14 @@ https://github.com/hadashiA/VContainer
 
 # Vcontainerとは
 
-vContainerとはDIコンテナです。
-DIコンテナのDIとは何かというとDependency Injection、依存性の注入と訳されていますが、なんだかわかりにくいですね。
-やっていることは、インタフェースにインスタンスを代入しているので、
+VContainerとはDIコンテナです。
+DIコンテナのDIとは何かというとDependency Injection、依存性の注入と訳されています。
+
+なんだかわかりにくいですね。やっていることは、インタフェースにインスタンスを代入しているので、
 
 「仕様（インタフェース）に基づきゲームを作る」
 
-といったイメージをもつとイメージしやすいのではないでしょうか？
+といったイメージをもつと想像しやすいのではないでしょうか？
 
 実際の具体例を説明していきます。
 ソーシャルゲームでは必須のガチャ、まずインタフェースを考えるとこのようになります。
@@ -245,10 +246,76 @@ public void DamageTest()
 FirstSceneと、SecondSceneという２つのシーンを作りました。
 ２つのシーンに各々、FirstSceneDI、SecondSceneDIというスクリプトを作り、こちらでDIを実施しています。
 
-自分も最初にvContainerを学ぶときは、すべて最初に解決するかと思いましたが、画面ごとなど単位に分けてDIを実施し、また画面が破棄されるタイミングで
-DIしたものをまとめて破棄できたりするもので、このように生存期間(スコープ）の管理を一元化できるのも、DIのポイントのようです。
+自分も最初にVContainerを学ぶときは、すべて最初に解決するかと思いましたが、画面ごとなど単位に分けてDIを実施し、また画面が破棄されるタイミングで
+DIしたものをまとめて破棄できたりするもので、このように生存期間(スコープ）の管理を一元化できるのも、DIのポイントになります。
+
+# Test Runner
+次に、UnityのテストツールであるTest runnerについて説明します。
+
+Test runnerは以下のようなコードをPlayせずとも動作させ確認できます。(Playmodeでもテストする方法もあります）
 
 
-# 参考資料
+```
+public class EditorModeTest
+{
+    [Test]
+    public void GachaDITest()
+    {
+        var builder = new ContainerBuilder();
+        
+        builder.Register<IGacha, GachaDummy>(Lifetime.Singleton);
+        IObjectResolver _container = builder.Build();
+        IGacha _gacha = _container.Resolve<IGacha>();
+        var gachaResult = _gacha.DrawGacha();
+        Assert.That(gachaResult, Is.EqualTo("ダミーアイテム1"));
+    }
+
+    [Test]
+    public void GachaTest()
+    {
+        IGacha _gacha = new GachaDummy();
+        var gachaResult = _gacha.DrawGacha();
+        Assert.That(gachaResult, Is.EqualTo("ダミーアイテム1"));
+    }
+
+    [Test]
+    public void DamageTest()
+    {
+        var builder = new ContainerBuilder();
+        builder.Register<IUnit,UnitImpl>(Lifetime.Transient);
+        builder.Register<ICalcDamage,CalcDamageStory>(Lifetime.Singleton);
+        IObjectResolver _container = builder.Build();
+        var _player = _container.Resolve<IUnit>();
+        var _enemy = _container.Resolve<IUnit>();
+        _enemy = _player.AddDamageToUnit(_enemy);
+        
+        Assert.That(_enemy.Hp, Is.EqualTo(90));
+    }
+    
+}
+```
+
+このような感じで、意図した値になるかを確認するように実装します。
+Assert.That(gachaResult, Is.EqualTo("ダミーアイテム1"));
+Assert.That(_enemy.Hp, Is.EqualTo(90));
+
+VContainerを使っていれば、インスタンスの構築もPlaymode同様にでき、テストを容易に行うことができるでしょう。
+詰まるのは、Assert.Thatでのテストコードを書く所と、Assembly Definitionを使う所でしょうか。
+
+Assert.Thatのコードは、今ならChatGPT(Github Copilot)に依頼するのがいいのではないでしょうか？
+何をテストするべきかを人間が考えて、コード自体はAIが生成するのが快適なテストライフを実現できるかと思います。
+
+Test RunnerはAssembly Definitionを仕様するため、参照が解決できなかったり、循環参照でエラーになってしまうことがあります。
+以下のサイトが参考になるかと思います。
+https://papacoder.net/unity-test-runner-assembly-definition/
+
+また、Assembly Definitionを正しく理解することで、問題発生時に解決できるようになりますので、時間をとって、まずはAssembly Definitionを学ぶことをおすすめします。
+https://qiita.com/toRisouP/items/d206af3029c7d80326ed
+
+
+# その他参考資料
+
+Vcontainerを学ぶにはこのサイトが丁寧でおすすめです
 
 https://qiita.com/sakano/items/b91e01f7fc0a946090ac
+
