@@ -309,9 +309,11 @@ Assert.Thatのコードは、今ならChatGPT(Github Copilot)に依頼するの�
 
 Test RunnerはAssembly Definitionを仕様するため、参照が解決できなかったり、循環参照でエラーになってしまうことがあります。
 以下のサイトが参考になるかと思います。
+
 https://papacoder.net/unity-test-runner-assembly-definition/
 
 また、Assembly Definitionを正しく理解することで、問題発生時に解決できるようになりますので、時間をとって、まずはAssembly Definitionを学ぶことをおすすめします。
+
 https://qiita.com/toRisouP/items/d206af3029c7d80326ed
 
 
