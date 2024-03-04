@@ -296,7 +296,9 @@ public class EditorModeTest
 ```
 
 このような感じで、意図した値になるかを確認するように実装します。
+
 Assert.That(gachaResult, Is.EqualTo("ダミーアイテム1"));
+
 Assert.That(_enemy.Hp, Is.EqualTo(90));
 
 VContainerを使っていれば、インスタンスの構築もPlaymode同様にでき、テストを容易に行うことができるでしょう。
